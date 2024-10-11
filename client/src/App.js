@@ -16,6 +16,11 @@ import CreatePost from './pages/Admin/CreatePost.js';
 import Users from './pages/Admin/Users';
 import Posts from './user/Posts.js';
 import Profile from './user/Profile.js';
+import Ai from '../src/pages/Ai.js'
+import MyPage from './pages/Bart.js';
+import Internship from './pages/Internship.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
@@ -36,10 +41,14 @@ function App() {
       <Route path="/register" element={<Register/>}/>
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
       <Route path="/login" element={<Login/>}/>      
-      <Route path='/about' element={<About/>}/>
+      <Route path='/about-us' element={<About/>}/>
       <Route path='/contact' element={<Contact/>} />
+      <Route path='/bart' element={<MyPage/>}/>
       <Route path='*' element={<PageNotFound/>} />
       <Route path='/policy' element={<Policy/>} />
+      <Route path="/ask-ai-for-help" element={<Ai/>} />
+      <Route path="/internships" element={<Internship/>} />
+
     </Routes>
 
     </>

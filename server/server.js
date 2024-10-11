@@ -11,7 +11,6 @@ import cors from 'cors'
 import streamRoutes from './routes/streamRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 
-
 //configure env
 dotenv.config();
 
@@ -30,6 +29,9 @@ app.use(morgan('dev'))
 app.use('/api/v1/auth',authRoutes);
 app.use('/api/v1/stream',streamRoutes);
 app.use('/api/v1/post',postRoutes)
+
+
+
 //rest api
 app.get("/",(req,res)=>{
     res.send(

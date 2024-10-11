@@ -24,14 +24,21 @@ const Header = () => {
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon" />
     </button>
+    {/* <GiEgyptianBird /> */}
     <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-      <Link to ="/" className="navbar-brand"> <GiEgyptianBird />Soul-aid </Link>
+      <Link to ="/" className="navbar-brand">  Internify</Link>
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
         <li className="nav-item">
           <NavLink  to ="/" className="nav-link" >Home</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink  to ="/antidepressionzone" className="nav-link" >AntiDepressionZone</NavLink>
+          <NavLink  to ="/about-us" className="nav-link" >About-Us</NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink  to ="/contact" className="nav-link" >Contact</NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink  to ="/ask-ai-for-help" className="nav-link" >Ask AI For Help</NavLink>
         </li>
         {
           !auth.user?(<>
@@ -59,7 +66,7 @@ const Header = () => {
           </li></>)
         }
         <li className="nav-item">
-          <NavLink to= "/bart" className="nav-link">Bart (0)</NavLink>
+          <NavLink to= "/bart" className="nav-link">MY (0)</NavLink>
         </li>
       </ul>
     </div>

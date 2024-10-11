@@ -1,0 +1,24 @@
+/* CreatePost.css */
+
+.container-fluid {
+    background-color: #f8f9fa; /* Light background */
+  }
+  
+  .card {
+    border-radius: 10px; /* Rounded corners */
+  }
+  
+  .card h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    width: 100%; /* Full width button */
+    padding: 10px;
+  }
+  
+  .alert {
+    margin-top: 20px; /* Space for alerts */
+  }
+  

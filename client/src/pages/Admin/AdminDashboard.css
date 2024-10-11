@@ -1,0 +1,52 @@
+/* AdminDashboard.css */
+
+.container-fluid {
+    background-color: #f8f9fa; /* Light background for the admin dashboard */
+  }
+  
+  .card {
+    border-radius: 10px;
+    border: 1px solid #dee2e6; /* Light border */
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .card-text {
+    font-size: 1.1rem;
+    color: #495057; /* Darker text color */
+  }
+  
+  button {
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  button:hover {
+    opacity: 0.9; /* Slightly darken button on hover */
+  }
+  
+  .alert {
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+  
+  .admin-actions {
+    margin-top: 20px;
+  }
+  
+  .admin-actions button {
+    margin-right: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      width: 100%; /* Full width on smaller screens */
+    }
+  
+    .container-fluid {
+      padding: 15px; /* Reduce padding on smaller screens */
+    }
+  }
+  

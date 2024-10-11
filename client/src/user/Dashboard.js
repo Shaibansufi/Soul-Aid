@@ -14,7 +14,7 @@ function Dashboard() {
           </div>
           <div className='col-md-9'>
             <div className='card w-75 p-3'>
-              <h3>User Name :{auth?.user?.name}</h3>
+              <h3>User Name :{auth?.user?.username}</h3>
               <h3>User Email :{auth?.user?.email}</h3>
               <h3>User Contact :{auth?.user?.address}</h3>
               {/* {console.log(auth?.user?.phone)} */}

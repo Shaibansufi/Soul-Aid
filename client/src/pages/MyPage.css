@@ -1,0 +1,73 @@
+.my-page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    text-align: left;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+    padding-bottom: 10px;
+  }
+  
+  .internships-section,
+  .counseling-section,
+  .resources-section {
+    margin-top: 40px;
+  }
+  
+  .internship-list,
+  .counseling-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .internship-item,
+  .counseling-item {
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .internship-item:hover,
+  .counseling-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .resources-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .resources-list li {
+    margin: 10px 0;
+  }
+  
+  .resources-list a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .resources-list a:hover {
+    text-decoration: underline;
+  }
+  

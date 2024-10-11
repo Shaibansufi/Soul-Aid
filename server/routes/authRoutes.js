@@ -3,7 +3,7 @@ import {
     registerController,
     loginController,
     testController,
-    forgotPasswordController
+    forgotPasswordController,
 }
 from '../controllers/authController.js'
 import { isAdmin, requireSignIn } from '../middlewares/authMiddleware.js';
@@ -11,7 +11,7 @@ import { isAdmin, requireSignIn } from '../middlewares/authMiddleware.js';
 const router  = express.Router()        
 
 //routing
-//REGISTER || METHOD POST
+//REGISTER || METHOD POST   
 router.post('/register',registerController);
 
 // LOGIN || POST
