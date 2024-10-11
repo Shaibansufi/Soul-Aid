@@ -48,9 +48,9 @@ import './HomePage.css'; // CSS for styling
 
 const Home = () => {
   return (
-    <Layout title={'Welcome to SkillBarter'}>
+    <Layout title={'Welcome to Soul-Aid'}>
       <div className="home-container">
-        <h1>Welcome to SkillBarter</h1>
+        <h1>Welcome to Soul Aid</h1>
         <p className="intro-text">
           Your gateway to a successful career with tailored roadmaps for various academic streams.
         </p>
