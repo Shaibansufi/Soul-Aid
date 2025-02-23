@@ -4,40 +4,68 @@ import './About.css'; // CSS for styling
 
 const About = () => {
   return (
-    <Layout title={'About Us'}>
+    <Layout title={'About Us - Skill Barter'}>
       <div className="about-container">
-        <h1>About Internify</h1>
-        <p className="intro-text">
-          Internify is dedicated to empowering students by providing clear roadmaps for their academic and career journeys. Our goal is to bridge the gap between education and employment by offering comprehensive resources tailored to various academic streams.
-        </p>
+        {/* Hero Section */}
+        <div className="about-hero">
+          <h1>About Skill Barter</h1>
+          <p className="intro-text">
+            Skill Barter is a revolutionary platform designed to empower freelancers by enabling them to exchange skills and services. Our mission is to create a collaborative community where professionals can grow together.
+          </p>
+        </div>
 
-        <h2>Our Mission</h2>
-        <p>
-          Our mission is to equip students with the knowledge, skills, and resources they need to succeed in their chosen fields. We strive to be the go-to platform for students seeking guidance on their academic paths and career opportunities.
-        </p>
+        {/* Mission Section */}
+        <div className="mission-section">
+          <h2>Our Mission</h2>
+          <p>
+            At Skill Barter, we aim to connect freelancers with opportunities to trade their skills, build their portfolios, and expand their professional networks. We are committed to providing a seamless and secure platform for skill exchange.
+          </p>
+        </div>
 
-        <h2>Our Vision</h2>
-        <p>
-          We envision a world where every student has access to personalized educational pathways that lead to successful careers, fostering innovation and growth in diverse industries.
-        </p>
+        {/* Vision Section */}
+        <div className="vision-section">
+          <h2>Our Vision</h2>
+          <p>
+            We envision a world where freelancers can effortlessly find and exchange services, fostering a supportive and innovative community that drives professional growth and success.
+          </p>
+        </div>
 
-        <h2>Our Team</h2>
-        <div className="team-container">
-          <div className="team-member">
-            <h3>John Doe</h3>
-            <p>Co-Founder & CEO</p>
-            <p>John has over a decade of experience in education technology and is passionate about helping students achieve their goals.</p>
+        {/* Team Section */}
+        <div className="team-section">
+          <h2>Meet Our Team</h2>
+          <div className="team-grid">
+            <div className="team-member">
+              <img src="/images/john-doe.jpg" alt="John Doe" className="team-member-image" />
+              <h3>John Doe</h3>
+              <p className="team-member-role">Co-Founder & CEO</p>
+              <p className="team-member-bio">
+                John has over a decade of experience in freelancing and is passionate about helping professionals achieve their goals.
+              </p>
+            </div>
+            <div className="team-member">
+              <img src="/images/jane-smith.jpg" alt="Jane Smith" className="team-member-image" />
+              <h3>Jane Smith</h3>
+              <p className="team-member-role">Co-Founder & CTO</p>
+              <p className="team-member-bio">
+                Jane is an expert in software development and is committed to building innovative solutions for freelancers.
+              </p>
+            </div>
+            <div className="team-member">
+              <img src="/images/emily-johnson.jpg" alt="Emily Johnson" className="team-member-image" />
+              <h3>Emily Johnson</h3>
+              <p className="team-member-role">Head of Community</p>
+              <p className="team-member-bio">
+                Emily specializes in creating engaging and supportive communities for professionals.
+              </p>
+            </div>
           </div>
-          <div className="team-member">
-            <h3>Jane Smith</h3>
-            <p>Co-Founder & CTO</p>
-            <p>Jane is an expert in software development and is committed to building innovative solutions for students.</p>
-          </div>
-          <div className="team-member">
-            <h3>Emily Johnson</h3>
-            <p>Head of Content</p>
-            <p>Emily specializes in creating educational resources that are both informative and engaging.</p>
-          </div>
+        </div>
+
+        {/* Call-to-Action Section */}
+        <div className="cta-section">
+          <h2>Join the Skill Barter Community</h2>
+          <p>Ready to exchange skills and grow your career? Sign up today and become part of our thriving community.</p>
+          <a href="/signup" className="cta-button">Sign Up Now</a>
         </div>
       </div>
     </Layout>

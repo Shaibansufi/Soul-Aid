@@ -38,7 +38,7 @@ const Ai = () => {
   };
 
   return (
-    <Layout title={'Ask-AI-Us SB'}>
+    <Layout title={'Ask AI for Freelancing Help'}>
       <div className="ai-container">
         <h1>Ask AI for Help</h1>
         <form onSubmit={handleSubmit} className="ai-form">

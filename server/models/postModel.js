@@ -32,6 +32,38 @@ const postSchema = new mongoose.Schema({
     barting:{
         type:Boolean,
     },
+    bids: [{
+        user: {
+            type: mongoose.ObjectId,
+            ref: "users"
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    rating: {
+        type: Number,
+        default: 0,
+    },
+    visibility: {
+        type: String,
+        enum: ["public", "private"],
+        default: "public"
+    },
+    client: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ["active", "completed", "pending"],
+        default: "active"
+    }
 },
 {timestamps:true}
 );

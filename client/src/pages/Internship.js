@@ -8,27 +8,27 @@ const Internship = () => {
   const [auth] = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Sample internship data
-  const internships = [
-    { id: 1, title: 'Web Development Internship', location: 'Remote', duration: '3 months', description: 'Learn and contribute to web development projects.' },
-    { id: 2, title: 'Data Science Internship', location: 'On-site', duration: '6 months', description: 'Work with data analysis and machine learning.' },
-    { id: 3, title: 'Marketing Internship', location: 'Remote', duration: '2 months', description: 'Assist with marketing campaigns and strategies.' },
+  // Sample project data
+  const projects = [
+    { id: 1, title: 'Website Design', client: 'Tech Corp', duration: '3 months', description: 'Design a responsive website.' },
+    { id: 2, title: 'Data Analysis', client: 'Data Solutions', duration: '6 months', description: 'Analyze data and create reports.' },
+    { id: 3, title: 'Marketing Campaign', client: 'Marketing Inc.', duration: '2 months', description: 'Develop and execute marketing strategies.' },
   ];
 
-  const filteredInternships = internships.filter(internship =>
-    internship.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProjects = projects.filter(project =>
+    project.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <Layout title={'Internship Opportunities - SB'}>
+    <Layout title={'Project Opportunities - Skill Barter'}>
       <div className='container-fluid m-3 p-3'>
         <div className='row'>
           <div className='col-md-12'>
             <Card className='shadow p-4'>
-              <Card.Title>Internship Opportunities</Card.Title>
+              <Card.Title>Project Opportunities</Card.Title>
               <Form.Control
                 type="text"
-                placeholder="Search internships..."
+                placeholder="Search projects..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="mb-3"
@@ -37,20 +37,20 @@ const Internship = () => {
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Location</th>
+                    <th>Client</th>
                     <th>Duration</th>
                     <th>Description</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredInternships.length > 0 ? (
-                    filteredInternships.map(internship => (
-                      <tr key={internship.id}>
-                        <td>{internship.title}</td>
-                        <td>{internship.location}</td>
-                        <td>{internship.duration}</td>
-                        <td>{internship.description}</td>
+                  {filteredProjects.length > 0 ? (
+                    filteredProjects.map(project => (
+                      <tr key={project.id}>
+                        <td>{project.title}</td>
+                        <td>{project.client}</td>
+                        <td>{project.duration}</td>
+                        <td>{project.description}</td>
                         <td>
                           <Button variant="primary" size="sm">Apply</Button>
                         </td>
@@ -58,14 +58,14 @@ const Internship = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="text-center">No internships found</td>
+                      <td colSpan="5" className="text-center">No projects found</td>
                     </tr>
                   )}
                 </tbody>
               </Table>
-              {filteredInternships.length === 0 && (
+              {filteredProjects.length === 0 && (
                 <Alert variant="info">
-                  No internships match your search criteria.
+                  No projects match your search criteria.
                 </Alert>
               )}
             </Card>

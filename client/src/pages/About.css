@@ -1,68 +1,141 @@
+/* General Styles */
 .about-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    text-align: left;
-  }
-  
-  h1 {
-    font-size: 3rem;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .intro-text {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    color: #555;
-  }
-  
-  h2 {
-    font-size: 2.5rem;
-    margin-top: 40px;
-    margin-bottom: 20px;
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    display: inline-block;
-    padding-bottom: 10px;
-  }
-  
-  .team-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-top: 20px;
-  }
-  
-  .team-member {
-    flex: 1;
-    min-width: 250px;
-    max-width: 300px;
-    margin: 20px;
-    padding: 20px;
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .team-member:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  p {
-    color: #555;
-  }
-  
+  max-width: 1600px; /* Increased width */
+  margin: 0 auto;
+  padding: 40px 20px; /* Increased padding */
+}
+
+/* Hero Section */
+.about-hero {
+  text-align: center;
+  padding: 80px 20px; /* Increased padding */
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+  border-radius: 10px;
+  margin-bottom: 60px; /* Increased margin */
+}
+
+.about-hero h1 {
+  font-size: 3rem; /* Larger font size */
+  margin-bottom: 20px;
+}
+
+.intro-text {
+  font-size: 1.3rem; /* Larger font size */
+  max-width: 1000px; /* Wider text container */
+  margin: 0 auto;
+  line-height: 1.8; /* Improved line spacing */
+}
+
+/* Mission and Vision Sections */
+.mission-section,
+.vision-section {
+  text-align: center;
+  margin: 80px 0; /* Increased margin */
+}
+
+.mission-section h2,
+.vision-section h2 {
+  font-size: 2.5rem; /* Larger font size */
+  margin-bottom: 30px;
+}
+
+.mission-section p,
+.vision-section p {
+  font-size: 1.2rem; /* Larger font size */
+  max-width: 1000px; /* Wider text container */
+  margin: 0 auto;
+  color: #555;
+  line-height: 1.8; /* Improved line spacing */
+}
+
+/* Team Section */
+.team-section {
+  text-align: center;
+  margin: 100px 0; /* Increased margin */
+}
+
+.team-section h2 {
+  font-size: 2.5rem; /* Larger font size */
+  margin-bottom: 50px;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Wider grid items */
+  gap: 40px; /* Increased gap */
+}
+
+.team-member {
+  padding: 30px; /* Increased padding */
+  background: #f9f9f9;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.team-member-image {
+  width: 120px; /* Larger image */
+  height: 120px; /* Larger image */
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.team-member h3 {
+  font-size: 1.8rem; /* Larger font size */
+  margin-bottom: 10px;
+}
+
+.team-member-role {
+  font-size: 1.2rem; /* Larger font size */
+  color: #6a11cb;
+  margin-bottom: 10px;
+}
+
+.team-member-bio {
+  font-size: 1.1rem; /* Larger font size */
+  color: #555;
+  line-height: 1.8; /* Improved line spacing */
+}
+
+/* Call-to-Action Section */
+.cta-section {
+  text-align: center;
+  padding: 80px 20px; /* Increased padding */
+  background: #f9f9f9;
+  border-radius: 10px;
+  margin: 100px 0; /* Increased margin */
+}
+
+.cta-section h2 {
+  font-size: 2.5rem; /* Larger font size */
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  font-size: 1.2rem; /* Larger font size */
+  max-width: 1000px; /* Wider text container */
+  margin: 0 auto 30px;
+  color: #555;
+  line-height: 1.8; /* Improved line spacing */
+}
+
+.cta-button {
+  padding: 15px 30px; /* Larger button */
+  background: #6a11cb;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem; /* Larger font size */
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #2575fc;
+  transform: translateY(-2px);
+}
