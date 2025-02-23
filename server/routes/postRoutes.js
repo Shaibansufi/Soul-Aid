@@ -1,37 +1,34 @@
 import express from "express";
 import { requireSignIn } from "../middlewares/authMiddleware.js";
-import { createPostController, getPostController, postPhotoController, singlePostController,deletePostController,updatePostController } from "../controllers/postController.js";
+import { createPostController, getPostController, postPhotoController, singlePostController, deletePostController, updatePostController, getUserPostsController } from "../controllers/postController.js";
 import Formidable from "express-formidable";
-const router = express.Router()
-
+const router = express.Router();
 
 // Routes
 
 // Create Post || Post 
 router.post(
-    '/create-post',
+    '/create',
     requireSignIn,
-    Formidable(),
     createPostController
 );
 
-
 // Get All Posts || Get
-router.get('/get-posts',getPostController)
+router.get('/get-posts', getPostController);
+
+// Get User Posts
+router.get('/user', requireSignIn, getUserPostsController);
+
 export default router;
 
-
-// Single Post || GEt 
-router.get('/single-post/:slug',singlePostController)
-
+// Single Post || Get 
+router.get('/single-post/:slug', singlePostController);
 
 // Get Photo
-router.get('/post-photo/:pid',postPhotoController)
-
+router.get('/post-photo/:pid', postPhotoController);
 
 // Delete Post 
-router.delete('/delete-post/:pid',deletePostController)
-
+router.delete('/delete-post/:pid', deletePostController);
 
 // Update Post || Put
 router.put(

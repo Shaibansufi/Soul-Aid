@@ -2,34 +2,21 @@ import postModel from "../models/postModel.js";
 import fs from 'fs';
 import slugify from 'slugify';
 
-// Create Post || Post 
+// Create Post || POST
 export const createPostController = async (req, res) => {
     try {
-        const { name, description, price, stream, credit, barting, visibility, client, status } = req.fields;
-        const { photo } = req.files;
-        switch (true) {
-            case !name:
-                return res.status(401).send({ message: 'Name is Required' });
-            case !description:
-                return res.status(401).send({ message: 'Description is Required' });
-            case !price:
-                return res.status(401).send({ message: 'Price is Required' });
-            case !stream:
-                return res.status(401).send({ message: 'Stream is Required' });
-            case !credit:
-                return res.status(401).send({ message: 'Credit is Required' });
-            case !client:
-                return res.status(401).send({ message: 'Client is Required' });
-            case !status:
-                return res.status(401).send({ message: 'Status is Required' });
-            case photo && photo.size > 1000000:
-                return res.status(401).send({ message: 'Photo should be less than 1 MB' });
+        const { title, content } = req.body;
+        if (!title || !content) {
+            return res.status(400).send({
+                success: false,
+                message: 'Title and content are required'
+            });
         }
-        const post = new postModel({ ...req.fields, slug: slugify(name) });
-        if (photo) {
-            post.photo.data = fs.readFileSync(photo.path);
-            post.photo.contentType = photo.type;
-        }
+        const post = new postModel({
+            user: req.user._id,
+            title,
+            content
+        });
         await post.save();
         res.status(201).send({
             success: true,
@@ -39,77 +26,87 @@ export const createPostController = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Create Post',
+            message: 'Error in Creating Post',
             error
         });
     }
 };
 
-// Get All Posts || Get
-export const getPostController = async (req, res) => {
+// Get User Posts || GET
+export const getUserPostsController = async (req, res) => {
     try {
-        const posts = await postModel
-            .find({})
-            .populate('stream')
-            .select("-photo")
-            .limit(12)
-            .sort({ createdAt: -1 });
+        const posts = await postModel.find({ user: req.user._id });
         res.status(200).send({
             success: true,
-            countTotal: posts.length,
-            message: 'All The Posts Are : - ',
-            posts,
+            message: 'User Posts Fetched Successfully',
+            posts
         });
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Getting All Posts',
+            message: 'Error in Fetching User Posts',
             error
         });
     }
 };
 
-// Single Post Controller
-export const singlePostController = async (req, res) => {
+// Get All Posts || GET
+export const getPostController = async (req, res) => {
     try {
-        const post = await postModel.findOne({ slug: req.params.slug })
-            .select("-photo")
-            .populate("stream");
+        const posts = await postModel.find({});
         res.status(200).send({
             success: true,
-            message: 'Single Post is : - ',
+            message: 'All Posts Fetched Successfully',
+            posts
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: 'Error in Fetching Posts',
+            error
+        });
+    }
+};
+
+// Get Single Post || GET
+export const singlePostController = async (req, res) => {
+    try {
+        const post = await postModel.findOne({ slug: req.params.slug });
+        res.status(200).send({
+            success: true,
+            message: 'Single Post Fetched Successfully',
             post
         });
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Single Post',
-            error,
-        });
-    }
-};
-
-// Post Photo Controller || Get
-export const postPhotoController = async (req, res) => {
-    try {
-        const post = await postModel.findById(req.params.pid).select("photo");
-        if (post.photo.data) {
-            res.set('Content-type', post.photo.contentType);
-            return res.status(200).send(post.photo.data);
-        }
-    } catch (error) {
-        res.status(500).send({
-            success: false,
-            message: 'Error in Post Photo',
+            message: 'Error in Fetching Single Post',
             error
         });
     }
 };
 
-// Delete Post Controller || Delete
+// Get Post Photo || GET
+export const postPhotoController = async (req, res) => {
+    try {
+        const post = await postModel.findById(req.params.pid).select("photo");
+        if (post.photo.data) {
+            res.set("Content-type", post.photo.contentType);
+            return res.send(post.photo.data);
+        }
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: 'Error in Fetching Post Photo',
+            error
+        });
+    }
+};
+
+// Delete Post || DELETE
 export const deletePostController = async (req, res) => {
     try {
-        await postModel.findByIdAndDelete(req.params.pid).select("-photo");
+        await postModel.findByIdAndDelete(req.params.pid);
         res.status(200).send({
             success: true,
             message: 'Post Deleted Successfully'
@@ -117,42 +114,23 @@ export const deletePostController = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Deletion of Post',
+            message: 'Error in Deleting Post',
             error
         });
     }
 };
 
-// Update Post Controller || Put
+// Update Post || PUT
 export const updatePostController = async (req, res) => {
     try {
-        const { name, description, price, stream, credit, barting, visibility, client, status } = req.fields;
-        const { photo } = req.files;
-        switch (true) {
-            case !name:
-                return res.status(401).send({ message: 'Name is Required' });
-            case !description:
-                return res.status(401).send({ message: 'Description is Required' });
-            case !price:
-                return res.status(401).send({ message: 'Price is Required' });
-            case !stream:
-                return res.status(401).send({ message: 'Stream is Required' });
-            case !credit:
-                return res.status(401).send({ message: 'Credit is Required' });
-            case !client:
-                return res.status(401).send({ message: 'Client is Required' });
-            case !status:
-                return res.status(401).send({ message: 'Status is Required' });
-            case photo && photo.size > 1000000:
-                return res.status(401).send({ message: 'Photo should be less than 1 MB' });
-        }
-        const post = await postModel.findByIdAndUpdate(req.params.pid, { ...req.fields, slug: slugify(name) }, { new: true });
-        if (photo) {
-            post.photo.data = fs.readFileSync(photo.path);
-            post.photo.contentType = photo.type;
-        }
+        const { title, content } = req.fields;
+        const post = await postModel.findByIdAndUpdate(
+            req.params.pid,
+            { title, content },
+            { new: true }
+        );
         await post.save();
-        res.status(201).send({
+        res.status(200).send({
             success: true,
             message: 'Post Updated Successfully',
             post
@@ -160,7 +138,7 @@ export const updatePostController = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Update Post',
+            message: 'Error in Updating Post',
             error
         });
     }

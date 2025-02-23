@@ -1,71 +1,19 @@
 import mongoose from "mongoose";
- 
+
 const postSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+    user: {
+        type: mongoose.ObjectId,
+        ref: "users",
+        required: true
     },
-    slug:{
-        type:String,
-        required:true,
-    },
-    description:{
-        type:String,
-        required:true,
-    },
-    price:{
-        type:Number,
-        required:true,
-    },
-    stream:{
-        type:mongoose.ObjectId,
-        ref:"streams"
-    },
-    credit:{
-        type:Number,
-        required:true
-    },
-    photo:{
-        data:Buffer,
-        contentType:String,
-    },
-    barting:{
-        type:Boolean,
-    },
-    bids: [{
-        user: {
-            type: mongoose.ObjectId,
-            ref: "users"
-        },
-        amount: {
-            type: Number,
-            required: true
-        },
-        timestamp: {
-            type: Date,
-            default: Date.now
-        }
-    }],
-    rating: {
-        type: Number,
-        default: 0,
-    },
-    visibility: {
-        type: String,
-        enum: ["public", "private"],
-        default: "public"
-    },
-    client: {
+    title: {
         type: String,
         required: true
     },
-    status: {
+    content: {
         type: String,
-        enum: ["active", "completed", "pending"],
-        default: "active"
+        required: true
     }
-},
-{timestamps:true}
-);
+}, { timestamps: true });
 
-export default mongoose.model('posts',postSchema)
+export default mongoose.model('posts', postSchema);
