@@ -1,6 +1,6 @@
 import express from "express";
 import { requireSignIn } from "../middlewares/authMiddleware.js";
-import { createPostController, getPostController, postPhotoController, singlePostController, deletePostController, updatePostController, getUserPostsController } from "../controllers/postController.js";
+import { createPostController, getPostController, postPhotoController, singlePostController, deletePostController, updatePostController, getUserPostsController, addBidController, addRatingController, addLikeController, addCommentController } from "../controllers/postController.js";
 import Formidable from "express-formidable";
 const router = express.Router();
 
@@ -10,6 +10,7 @@ const router = express.Router();
 router.post(
     '/create',
     requireSignIn,
+    Formidable(),
     createPostController
 );
 
@@ -18,8 +19,6 @@ router.get('/get-posts', getPostController);
 
 // Get User Posts
 router.get('/user', requireSignIn, getUserPostsController);
-
-export default router;
 
 // Single Post || Get 
 router.get('/single-post/:slug', singlePostController);
@@ -37,3 +36,17 @@ router.put(
     Formidable(),
     updatePostController
 );
+
+// Add Bid to Post
+router.post('/add-bid', requireSignIn, addBidController);
+
+// Add Rating to Post
+router.post('/add-rating', requireSignIn, addRatingController);
+
+// Add Like to Post
+router.post('/add-like', requireSignIn, addLikeController);
+
+// Add Comment to Post
+router.post('/add-comment', requireSignIn, addCommentController);
+
+export default router;
