@@ -31,7 +31,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/stream', streamRoutes);
 app.use('/api/v1/post', postRoutes);
 app.use('/api/v1/mypage', mypageRoutes);
-app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/user', userRoutes); // Ensure userRoutes is used
 app.use('/api/v1/transaction', transactionRoutes);
 app.use('/api/v1/report', reportRoutes);
 

@@ -12,7 +12,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('/api/v1/user/notifications', {
+        const response = await axios.get('/api/v1/post/notifications', {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
         setNotifications(response.data.notifications);
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   const markNotificationsAsRead = async () => {
     try {
-      await axios.put('/api/v1/user/notifications/mark-as-read', {}, {
+      await axios.put('/api/v1/post/notifications/mark-as-read', {}, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       setNotifications(notifications.map(notification => ({ ...notification, read: true })));

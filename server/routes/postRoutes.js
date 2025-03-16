@@ -1,52 +1,125 @@
 import express from "express";
 import { requireSignIn } from "../middlewares/authMiddleware.js";
-import { createPostController, getPostController, postPhotoController, singlePostController, deletePostController, updatePostController, getUserPostsController, addBidController, addRatingController, addLikeController, addCommentController } from "../controllers/postController.js";
+import {
+  createPostController,
+  getUserPostsController,
+  getPostController,
+  singlePostController,
+  postPhotoController,
+  deletePostController,
+  updatePostController,
+  addBidController,
+  acceptBidController,
+  rejectBidController,
+  holdBidController,
+  completePostController,
+  addRatingController,
+  addLikeController,
+  addCommentController,
+  getAllPosts,
+  getPostPhoto,
+} from "../controllers/postController.js";
 import Formidable from "express-formidable";
+import userModel from "../models/userModel.js"; // Import userModel for notification routes
+
 const router = express.Router();
 
 // Routes
 
-// Create Post || Post 
-router.post(
-    '/create',
-    requireSignIn,
-    Formidable(),
-    createPostController
-);
+// Create Post || POST
+router.post("/create", requireSignIn, Formidable(), createPostController);
 
-// Get All Posts || Get
-router.get('/get-posts', getPostController);
+// Get All Posts || GET
+router.get("/get-posts", getPostController);
 
-// Get User Posts
-router.get('/user', requireSignIn, getUserPostsController);
+// Get User Posts || GET
+router.get("/user", requireSignIn, getUserPostsController);
 
-// Single Post || Get 
-router.get('/single-post/:slug', singlePostController);
+// Single Post || GET
+router.get("/single-post/:slug", singlePostController);
 
-// Get Photo
-router.get('/post-photo/:pid', postPhotoController);
+// Get Photo || GET
+router.get("/post-photo/:pid", postPhotoController);
 
-// Delete Post 
-router.delete('/delete-post/:pid', deletePostController);
+// Delete Post || DELETE
+router.delete("/delete-post/:pid", requireSignIn, deletePostController);
 
-// Update Post || Put
-router.put(
-    '/update-post/:pid',
-    requireSignIn,
-    Formidable(),
-    updatePostController
-);
+// Update Post || PUT
+router.put("/update-post/:pid", requireSignIn, updatePostController);
 
-// Add Bid to Post
-router.post('/add-bid', requireSignIn, addBidController);
+// Add Bid to Post || POST
+router.post("/add-bid", requireSignIn, addBidController);
 
-// Add Rating to Post
-router.post('/add-rating', requireSignIn, addRatingController);
+// Accept Bid || POST
+router.post("/accept-bid", requireSignIn, acceptBidController);
 
-// Add Like to Post
-router.post('/add-like', requireSignIn, addLikeController);
+// Reject Bid || POST
+router.post("/reject-bid", requireSignIn, rejectBidController);
 
-// Add Comment to Post
-router.post('/add-comment', requireSignIn, addCommentController);
+// Hold Bid || POST
+router.post("/hold-bid", requireSignIn, holdBidController);
+
+// Complete Post || POST
+router.post("/complete-post", requireSignIn, completePostController);
+
+// Add Comment to Post || POST
+router.post("/add-comment", requireSignIn, addCommentController);
+
+// Add Rating to Post || POST
+router.post("/add-rating", requireSignIn, addRatingController);
+
+// Add Like to Post || POST
+router.post("/add-like", requireSignIn, addLikeController);
+
+// Get All Posts || GET
+router.get("/", getAllPosts);
+
+// Get Post Photo || GET
+router.get("/photo/:postId", getPostPhoto);
+
+// Fetch Notifications for Logged-In User || GET
+router.get("/notifications", requireSignIn, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id).select("notifications");
+    res.status(200).send({
+      success: true,
+      notifications: user.notifications,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error fetching notifications",
+      error,
+    });
+  }
+});
+
+// Mark Notifications as Read || PUT
+router.put("/notifications/mark-as-read", requireSignIn, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Mark all notifications as read
+    user.notifications.forEach((notification) => (notification.read = true));
+    await user.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Notifications marked as read",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error marking notifications as read",
+      error,
+    });
+  }
+});
 
 export default router;
