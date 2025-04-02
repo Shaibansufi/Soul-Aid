@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    isAdmin: {
+      type: Boolean,
+      default: false, // Default to false for regular users
+    },
     notifications: [
       {
         message: {
@@ -64,6 +68,10 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    interests: {
+      type: [String],
+      default: [], // Default to an empty array
+    },
   },
   { timestamps: true }
 );

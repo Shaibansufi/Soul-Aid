@@ -13,18 +13,21 @@ const Transactions = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('/api/v1/transaction/user', {
+        const response = await axios.get(`/api/v1/transaction/user?timestamp=${new Date().getTime()}`, {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
+        console.log('Fetched transactions:', response.data.transactions); // Debugging
         setTransactions(response.data.transactions);
       } catch (err) {
         setError('Failed to fetch transactions. Please try again later.');
-        console.error(err);
+        console.error('Error in fetching transactions:', err);
       }
     };
 
     fetchTransactions();
   }, [auth.token]);
+
+  console.log('Fetched transactions:', transactions); // Debugging
 
   return (
     <Layout title={'Transactions - Skill Barter'}>
@@ -51,7 +54,7 @@ const Transactions = () => {
                   <td>{transaction.post.title}</td>
                   <td>${transaction.amount}</td>
                   <td>{transaction.status}</td>
-                  <td>{new Date(transaction.timestamp).toLocaleDateString()}</td>
+                  <td>{new Date(transaction.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))
             ) : (

@@ -18,6 +18,7 @@ import {
   addCommentController,
   getAllPosts,
   getPostPhoto,
+  getClusteredPostsController,
 } from "../controllers/postController.js";
 import Formidable from "express-formidable";
 import userModel from "../models/userModel.js"; // Import userModel for notification routes
@@ -76,6 +77,9 @@ router.get("/", getAllPosts);
 
 // Get Post Photo || GET
 router.get("/photo/:postId", getPostPhoto);
+
+// Fetch Clustered Posts || GET
+router.get("/clustered-posts", requireSignIn, getClusteredPostsController);
 
 // Fetch Notifications for Logged-In User || GET
 router.get("/notifications", requireSignIn, async (req, res) => {

@@ -25,13 +25,20 @@ export const createTransaction = async (req, res) => {
   }
 };
 
-// Get User Transactions
+// Get User Transactions (Updated)
 export const getUserTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ fromUser: req.user._id })
-      .populate('fromUser', 'name')
-      .populate('toUser', 'name')
-      .populate('post', 'title');
+    const transactions = await Transaction.find({
+      $or: [
+        { fromUser: req.user._id },  // User sent money
+        { toUser: req.user._id }      // User received money
+      ]
+    })
+    .populate('fromUser', 'name')
+    .populate('toUser', 'name')
+    .populate('post', 'title')
+    .sort({ createdAt: -1 });  // Newest first
+
     res.status(200).send({
       success: true,
       message: 'User Transactions Fetched Successfully',

@@ -102,9 +102,10 @@ const Posts = () => {
       );
       setPosts(posts.map((post) => (post._id === postId ? response.data.post : post)));
       setMessage(`Bid ${action}ed successfully!`);
+      setError('');
     } catch (err) {
-      setError(`Failed to ${action} bid. Please try again later.`);
-      console.error(err);
+      setError(err.response?.data?.message || `Failed to ${action} bid. Please try again later.`);
+      console.error('Error in bid action:', err);
     }
   };
 

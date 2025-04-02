@@ -21,18 +21,35 @@ export const getUserProfileController = async (req, res) => {
 // Update User Profile || Put
 export const updateUserProfileController = async (req, res) => {
     try {
-        const { name, email, phone, address, skills } = req.body;
-        const user = await userModel.findByIdAndUpdate(req.user._id, { name, email, phone, address, skills }, { new: true }).select("-password");
+        const { name, email, phone, address, interests } = req.body;
+
+        const user = await userModel.findById(req.user._id);
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Update user fields
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.phone = phone || user.phone;
+        user.address = address || user.address;
+        user.interests = interests || user.interests;
+
+        await user.save();
+
         res.status(200).send({
             success: true,
-            message: 'User Profile Updated Successfully',
-            user
+            message: "User profile updated successfully",
+            user,
         });
     } catch (error) {
         res.status(500).send({
             success: false,
-            message: 'Error in Updating User Profile',
-            error
+            message: "Error updating user profile",
+            error,
         });
     }
 };

@@ -49,8 +49,9 @@ const postSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['open', 'active', 'closed'],
-    default: 'open',
+    enum: ['open', 'active', 'closed'], // Ensure only valid enum values are allowed
+    default: 'open', // Default to 'open' for new posts
+    required: true, // Ensure the status field is always set
   },
   acceptedBid: {
     user: {
@@ -84,6 +85,11 @@ const postSchema = new mongoose.Schema({
       message: {
         type: String,
         required: true,
+      },
+      status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected', 'on hold'],
+        default: 'pending',
       },
       createdAt: {
         type: Date,

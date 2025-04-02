@@ -1,11 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
 import { useAuth } from '../context/auth';
 import UserMenu from './../components/Layout/UserMenu';
-import { Card, Row, Col, ListGroup } from 'react-bootstrap';
+import { Card, Row, Col, ListGroup, Alert, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 function Dashboard() {
-  const [auth] = useAuth();
+  const [auth, setAuth] = useAuth();
+  const [interests, setInterests] = useState(auth?.user?.interests || []);
+  const [newInterest, setNewInterest] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const handleAddInterest = async () => {
+    if (!newInterest.trim()) return;
+
+    try {
+      const updatedInterests = [...interests, newInterest.trim()];
+      const response = await axios.put(
+        '/api/v1/user/profile',
+        { interests: updatedInterests },
+        { headers: { Authorization: `Bearer ${auth.token}` } }
+      );
+
+      setInterests(response.data.user.interests);
+      setAuth({ ...auth, user: response.data.user });
+      setNewInterest('');
+      setMessage('Interest added successfully!');
+      setError('');
+    } catch (err) {
+      setError('Failed to add interest. Please try again later.');
+      console.error(err);
+    }
+  };
+
   return (
     <Layout title={'User Dashboard - Skill Barter'}>
       <div className='container-fluid m-3 p-3'>
@@ -31,6 +59,7 @@ function Dashboard() {
                 </Card.Text>
               </Card.Body>
             </Card>
+
             <Row className='mt-4'>
               <Col md={6}>
                 <Card>
@@ -53,15 +82,57 @@ function Dashboard() {
                 </Card>
               </Col>
             </Row>
+
             <Row className='mt-4'>
               <Col md={12}>
                 <Card>
                   <Card.Header>Notifications</Card.Header>
-                  <ListGroup variant="flush">
-                    <ListGroup.Item>Notification 1</ListGroup.Item>
-                    <ListGroup.Item>Notification 2</ListGroup.Item>
-                    <ListGroup.Item>Notification 3</ListGroup.Item>
+                  <ListGroup>
+                    {notifications.length > 0 ? (
+                      notifications.map((notification, index) => (
+                        <ListGroup.Item key={index} variant={notification.read ? 'light' : 'warning'}>
+                          {notification.message}
+                        </ListGroup.Item>
+                      ))
+                    ) : (
+                      <Alert variant="info">No notifications found.</Alert>
+                    )}
                   </ListGroup>
+                </Card>
+              </Col>
+            </Row>
+
+            <Row className='mt-4'>
+              <Col md={12}>
+                <Card>
+                  <Card.Header>Interests</Card.Header>
+                  <Card.Body>
+                    {message && <Alert variant="success">{message}</Alert>}
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <ListGroup>
+                      {interests.length > 0 ? (
+                        interests.map((interest, index) => (
+                          <ListGroup.Item key={index}>{interest}</ListGroup.Item>
+                        ))
+                      ) : (
+                        <Alert variant="info">No interests added yet.</Alert>
+                      )}
+                    </ListGroup>
+                    <Form className="mt-3">
+                      <Form.Group controlId="formNewInterest">
+                        <Form.Label>Add New Interest</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter a new interest"
+                          value={newInterest}
+                          onChange={(e) => setNewInterest(e.target.value)}
+                        />
+                      </Form.Group>
+                      <Button variant="primary" className="mt-2" onClick={handleAddInterest}>
+                        Add Interest
+                      </Button>
+                    </Form>
+                  </Card.Body>
                 </Card>
               </Col>
             </Row>
