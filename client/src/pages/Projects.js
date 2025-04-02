@@ -22,7 +22,7 @@ const Projects = () => {
           headers: { Authorization: `Bearer ${auth.token}` },
         });
         setPosts(response.data.posts);
-        setMessage('Posts fetched successfully based on your interests!');
+        setMessage('Posts fetched and prioritized based on your interests!');
       } catch (err) {
         if (err.response?.status === 400) {
           setError(err.response.data.message || 'Not enough posts to perform clustering.');

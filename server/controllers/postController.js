@@ -681,20 +681,14 @@ export const getPostPhoto = async (req, res) => {
 export const getClusteredPostsController = async (req, res) => {
   try {
     const user = req.user; // Logged-in user
-    const userSkills = user.skills || []; // User's skills
+    const userInterests = user.interests || []; // User's interests
     const allPosts = await postModel.find({}).lean(); // Fetch all posts
-
-    // Dynamically adjust the number of clusters
-    let k = 3; // Default number of clusters
-    if (allPosts.length < k) {
-      k = allPosts.length; // Set k to the number of posts if fewer than 3
-    }
 
     // If there are no posts, return an empty response
     if (allPosts.length === 0) {
       return res.status(200).send({
         success: true,
-        message: 'No posts available for clustering.',
+        message: 'No posts available.',
         posts: [],
       });
     }
@@ -707,11 +701,11 @@ export const getClusteredPostsController = async (req, res) => {
 
     // Convert skills to numerical vectors
     const vectors = data.map((item) =>
-      userSkills.map((skill) => (item.skills.includes(skill) ? 1 : 0))
+      userInterests.map((interest) => (item.skills.includes(interest) ? 1 : 0))
     );
 
     // Apply K-Means clustering
-    kmeans.clusterize(vectors, { k }, (err, result) => {
+    kmeans.clusterize(vectors, { k: Math.min(3, allPosts.length) }, (err, result) => {
       if (err) {
         console.error("Error in clustering:", err);
         return res.status(500).send({
@@ -721,7 +715,7 @@ export const getClusteredPostsController = async (req, res) => {
       }
 
       // Find the cluster closest to the user
-      const userVector = userSkills.map((skill) => 1); // User's vector
+      const userVector = userInterests.map(() => 1); // User's vector
       const closestCluster = result.reduce(
         (closest, cluster) => {
           const distance = cluster.centroid.reduce(
@@ -740,17 +734,28 @@ export const getClusteredPostsController = async (req, res) => {
         )
       );
 
+      // Prioritize posts based on user interests
+      const prioritizedPosts = clusteredPosts.map((post) => {
+        const matchingInterests = post.skills.filter((skill) =>
+          userInterests.includes(skill)
+        ).length;
+        return { ...post, matchingInterests };
+      });
+
+      // Sort posts by the number of matching interests (descending)
+      prioritizedPosts.sort((a, b) => b.matchingInterests - a.matchingInterests);
+
       res.status(200).send({
         success: true,
-        message: "Clustered posts fetched successfully.",
-        posts: clusteredPosts,
+        message: 'Posts fetched and prioritized based on your interests.',
+        posts: prioritizedPosts,
       });
     });
   } catch (error) {
-    console.error("Error in fetching clustered posts:", error);
+    console.error("Error in fetching prioritized posts:", error);
     res.status(500).send({
       success: false,
-      message: "Error in fetching clustered posts.",
+      message: "Error in fetching prioritized posts.",
       error,
     });
   }

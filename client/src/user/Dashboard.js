@@ -11,6 +11,7 @@ function Dashboard() {
   const [newInterest, setNewInterest] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [notifications, setNotifications] = useState([]);
 
   const handleAddInterest = async () => {
     if (!newInterest.trim()) return;
@@ -46,16 +47,16 @@ function Dashboard() {
               <Card.Body>
                 <Card.Title>User Information</Card.Title>
                 <Card.Text>
-                  <strong>Name:</strong> {auth?.user?.name}
+                  <strong>Name:</strong> {auth?.user?.name || 'N/A'}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Email:</strong> {auth?.user?.email}
+                  <strong>Email:</strong> {auth?.user?.email || 'N/A'}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Phone:</strong> {auth?.user?.phone}
+                  <strong>Phone:</strong> {auth?.user?.phone || 'N/A'}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Address:</strong> {auth?.user?.address}
+                  <strong>Address:</strong> {auth?.user?.address || 'N/A'}
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -90,7 +91,10 @@ function Dashboard() {
                   <ListGroup>
                     {notifications.length > 0 ? (
                       notifications.map((notification, index) => (
-                        <ListGroup.Item key={index} variant={notification.read ? 'light' : 'warning'}>
+                        <ListGroup.Item 
+                          key={`notif-${index}`} 
+                          variant={notification.read ? 'light' : 'warning'}
+                        >
                           {notification.message}
                         </ListGroup.Item>
                       ))
@@ -112,7 +116,9 @@ function Dashboard() {
                     <ListGroup>
                       {interests.length > 0 ? (
                         interests.map((interest, index) => (
-                          <ListGroup.Item key={index}>{interest}</ListGroup.Item>
+                          <ListGroup.Item key={`interest-${index}`}>
+                            {interest}
+                          </ListGroup.Item>
                         ))
                       ) : (
                         <Alert variant="info">No interests added yet.</Alert>
@@ -128,7 +134,11 @@ function Dashboard() {
                           onChange={(e) => setNewInterest(e.target.value)}
                         />
                       </Form.Group>
-                      <Button variant="primary" className="mt-2" onClick={handleAddInterest}>
+                      <Button 
+                        variant="primary" 
+                        className="mt-2" 
+                        onClick={handleAddInterest}
+                      >
                         Add Interest
                       </Button>
                     </Form>
