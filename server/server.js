@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 
 // configure env
 dotenv.config();
@@ -23,7 +24,8 @@ const app = express();
 
 // middleware
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json({ limit: '50mb' })); // Increase JSON payload limit
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })); // Increase URL-encoded payload limit
 app.use(morgan('dev'));
 
 // routes

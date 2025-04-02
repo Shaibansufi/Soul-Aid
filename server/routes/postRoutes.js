@@ -19,6 +19,7 @@ import {
   getAllPosts,
   getPostPhoto,
   getClusteredPostsController,
+  editPostController,
 } from "../controllers/postController.js";
 import Formidable from "express-formidable";
 import userModel from "../models/userModel.js"; // Import userModel for notification routes
@@ -47,6 +48,9 @@ router.delete("/delete-post/:pid", requireSignIn, deletePostController);
 
 // Update Post || PUT
 router.put("/update-post/:pid", requireSignIn, updatePostController);
+
+// Edit Post || PUT
+router.put("/edit-post/:pid", requireSignIn, editPostController);
 
 // Add Bid to Post || POST
 router.post("/add-bid", requireSignIn, addBidController);

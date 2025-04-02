@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
 import UserMenu from '../components/Layout/UserMenu';
 import { useAuth } from '../context/auth';
-import { Form, Button, Alert, Card, Collapse, Table } from 'react-bootstrap';
+import { Form, Button, Alert, Card, Collapse } from 'react-bootstrap';
 import axios from 'axios';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const Projects = () => {
   const [auth] = useAuth();
@@ -12,6 +13,7 @@ const Projects = () => {
   const [error, setError] = useState('');
   const [expandedPostId, setExpandedPostId] = useState(null); // Track which post is expanded
   const [loading, setLoading] = useState(false); // Loading state for fetching posts
+  const [clusterData, setClusterData] = useState([]); // Data for the chart
 
   // Fetch clustered posts on component mount
   useEffect(() => {
@@ -23,6 +25,13 @@ const Projects = () => {
         });
         setPosts(response.data.posts);
         setMessage('Posts fetched and prioritized based on your interests!');
+
+        // Prepare data for the chart
+        const chartData = response.data.posts.map((post, index) => ({
+          name: `Post ${index + 1}`,
+          matchingInterests: post.matchingInterests || 0,
+        }));
+        setClusterData(chartData);
       } catch (err) {
         if (err.response?.status === 400) {
           setError(err.response.data.message || 'Not enough posts to perform clustering.');
@@ -91,6 +100,24 @@ const Projects = () => {
                 ))
               ) : (
                 <Alert variant="info">No posts found based on your interests.</Alert>
+              )}
+            </div>
+
+            {/* Cluster Visualization */}
+            <div className="mt-5">
+              <h2>Cluster Visualization</h2>
+              {clusterData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={clusterData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="matchingInterests" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <Alert variant="info">No data available for visualization.</Alert>
               )}
             </div>
           </div>

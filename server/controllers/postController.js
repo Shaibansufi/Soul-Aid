@@ -680,11 +680,10 @@ export const getPostPhoto = async (req, res) => {
 
 export const getClusteredPostsController = async (req, res) => {
   try {
-    const user = req.user; // Logged-in user
-    const userInterests = user.interests || []; // User's interests
-    const allPosts = await postModel.find({}).lean(); // Fetch all posts
+    const user = req.user;
+    const userInterests = user.interests || [];
+    const allPosts = await postModel.find({}).populate('user', 'name').lean();
 
-    // If there are no posts, return an empty response
     if (allPosts.length === 0) {
       return res.status(200).send({
         success: true,
@@ -693,70 +692,158 @@ export const getClusteredPostsController = async (req, res) => {
       });
     }
 
-    // Prepare data for clustering
-    const data = allPosts.map((post) => ({
-      id: post._id,
-      skills: post.skills,
-    }));
+    // First, prioritize posts that directly match user interests
+    const postsWithScores = allPosts.map(post => {
+      // Calculate matching score based on skills
+      const matchingSkills = post.skills.filter(skill => 
+        userInterests.includes(skill)
+      ).length;
+      
+      // Additional scoring factors (optional)
+      const sameUserLocation = post.user.location === user.location ? 1 : 0;
+      const recentPost = (new Date() - new Date(post.createdAt)) < 604800000 ? 1 : 0; // 1 week
+      
+      return {
+        ...post,
+        matchScore: matchingSkills * 3 + sameUserLocation + recentPost // Weighted score
+      };
+    });
 
-    // Convert skills to numerical vectors
-    const vectors = data.map((item) =>
-      userInterests.map((interest) => (item.skills.includes(interest) ? 1 : 0))
+    // Sort by match score (descending)
+    postsWithScores.sort((a, b) => b.matchScore - a.matchScore);
+
+    // If user has strong interests, return directly matched posts first
+    if (userInterests.length > 0) {
+      const stronglyMatchedPosts = postsWithScores.filter(post => post.matchScore > 0);
+      if (stronglyMatchedPosts.length > 0) {
+        return res.status(200).send({
+          success: true,
+          message: 'Posts matching your interests.',
+          posts: stronglyMatchedPosts,
+        });
+      }
+    }
+
+    // Fallback to clustering when no direct matches
+    const vectors = postsWithScores.map(post => 
+      userInterests.map(interest => post.skills.includes(interest) ? 1 : 0)
     );
 
-    // Apply K-Means clustering
-    kmeans.clusterize(vectors, { k: Math.min(3, allPosts.length) }, (err, result) => {
+    kmeans.clusterize(vectors, { k: Math.min(3, postsWithScores.length) }, (err, result) => {
       if (err) {
-        console.error("Error in clustering:", err);
-        return res.status(500).send({
-          success: false,
-          message: "Error in clustering posts.",
+        console.error("Clustering error:", err);
+        // Return posts sorted by date if clustering fails
+        const fallbackPosts = [...postsWithScores].sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        return res.status(200).send({
+          success: true,
+          message: 'Showing recent posts.',
+          posts: fallbackPosts,
         });
       }
 
-      // Find the cluster closest to the user
-      const userVector = userInterests.map(() => 1); // User's vector
-      const closestCluster = result.reduce(
-        (closest, cluster) => {
-          const distance = cluster.centroid.reduce(
-            (sum, value, index) => sum + Math.abs(value - userVector[index]),
-            0
-          );
-          return distance < closest.distance ? { cluster, distance } : closest;
-        },
-        { cluster: null, distance: Infinity }
+      // Find cluster closest to user's interests
+      const userVector = userInterests.map(() => 1);
+      const closestCluster = result.reduce((closest, cluster) => {
+        const distance = cluster.centroid.reduce(
+          (sum, value, index) => sum + Math.abs(value - userVector[index]),
+          0
+        );
+        return distance < closest.distance ? { cluster, distance } : closest;
+      }, { cluster: null, distance: Infinity });
+
+      // Get posts from closest cluster
+      const clusteredPosts = postsWithScores.filter((_, index) =>
+        closestCluster.cluster.clusterInd.includes(index)
       );
 
-      // Fetch posts in the closest cluster
-      const clusteredPosts = allPosts.filter((post) =>
-        closestCluster.cluster.clusterInd.includes(
-          data.findIndex((item) => item.id.equals(post._id))
-        )
-      );
-
-      // Prioritize posts based on user interests
-      const prioritizedPosts = clusteredPosts.map((post) => {
-        const matchingInterests = post.skills.filter((skill) =>
-          userInterests.includes(skill)
-        ).length;
-        return { ...post, matchingInterests };
-      });
-
-      // Sort posts by the number of matching interests (descending)
-      prioritizedPosts.sort((a, b) => b.matchingInterests - a.matchingInterests);
+      // Combine direct matches (if any) with clustered results
+      const finalPosts = [
+        ...postsWithScores.filter(post => post.matchScore > 0),
+        ...clusteredPosts.filter(post => post.matchScore === 0)
+      ];
 
       res.status(200).send({
         success: true,
-        message: 'Posts fetched and prioritized based on your interests.',
-        posts: prioritizedPosts,
+        message: 'Recommended posts based on your interests.',
+        posts: finalPosts,
       });
     });
   } catch (error) {
-    console.error("Error in fetching prioritized posts:", error);
+    console.error("Error in post recommendation:", error);
     res.status(500).send({
       success: false,
-      message: "Error in fetching prioritized posts.",
-      error,
+      message: "Error in fetching posts.",
+      error: error.message,
+    });
+  }
+};
+
+export const editPostController = async (req, res) => {
+  try {
+    const {
+      title,
+      content,
+      category,
+      skills,
+      location,
+      availability,
+      experience,
+      contact,
+      expectedMoney,
+      visibility,
+      status,
+    } = req.body;
+
+    const post = await postModel.findById(req.params.pid);
+
+    if (!post) {
+      return res.status(404).send({
+        success: false,
+        message: 'Post not found.',
+      });
+    }
+
+    // Check if the logged-in user is the owner of the post
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.status(403).send({
+        success: false,
+        message: 'You are not authorized to edit this post.',
+      });
+    }
+
+    // Update all fields
+    post.title = title || post.title;
+    post.content = content || post.content;
+    post.category = category || post.category;
+
+    // Handle skills field (check if it's an array or a string)
+    if (skills) {
+      post.skills = Array.isArray(skills) ? skills : skills.split(',').map((skill) => skill.trim());
+    }
+
+    post.location = location || post.location;
+    post.availability = availability || post.availability;
+    post.experience = experience || post.experience;
+    post.contact = contact || post.contact;
+    post.expectedMoney = expectedMoney || post.expectedMoney;
+    post.visibility = visibility || post.visibility;
+    post.status = status || post.status;
+
+    await post.save();
+
+    res.status(200).send({
+      success: true,
+      message: 'Post updated successfully.',
+      post,
+    });
+  } catch (error) {
+    console.error('Error in editPostController:', error); // Log the error for debugging
+    res.status(500).send({
+      success: false,
+      message: 'Error in updating post.',
+      error: error.message, // Include the error message for debugging
     });
   }
 };

@@ -26,6 +26,8 @@ const Posts = () => {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false); // For post creation modal
   const [editPostStatus, setEditPostStatus] = useState('');
   const [expandedPostId, setExpandedPostId] = useState(null); // Track which post is expanded
+  const [showEditPostModal, setShowEditPostModal] = useState(false);
+  const [editPost, setEditPost] = useState(null); // Track the post being edited
 
   // Fetch posts on component mount
   useEffect(() => {
@@ -134,6 +136,30 @@ const Posts = () => {
   // Toggle post details visibility
   const togglePostDetails = (postId) => {
     setExpandedPostId(expandedPostId === postId ? null : postId);
+  };
+
+  // Handle opening the edit modal
+  const handleEditPost = (post) => {
+    setEditPost(post);
+    setShowEditPostModal(true);
+  };
+
+  // Handle editing the post
+  const handleEditPostSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `/api/v1/post/edit-post/${editPost._id}`,
+        editPost,
+        { headers: { Authorization: `Bearer ${auth.token}` } }
+      );
+      setPosts(posts.map((post) => (post._id === editPost._id ? response.data.post : post)));
+      setMessage('Post updated successfully!');
+      setShowEditPostModal(false);
+    } catch (err) {
+      console.error('Error in handleEditPostSubmit:', err); // Log the error for debugging
+      setError(err.response?.data?.message || 'Failed to update post. Please try again later.');
+    }
   };
 
   return (
@@ -296,6 +322,10 @@ const Posts = () => {
                       <Card.Title onClick={() => togglePostDetails(post._id)} style={{ cursor: 'pointer' }}>
                         {post.title} - Status: {post.status} - Expected Money: ${post.expectedMoney}
                       </Card.Title>
+                      <Card.Text>{post.content}</Card.Text>
+                      <Button variant="primary" onClick={() => handleEditPost(post)}>
+                        Edit Post
+                      </Button>
 
                       {/* Collapsible Post Details */}
                       <Collapse in={expandedPostId === post._id}>
@@ -434,6 +464,125 @@ const Posts = () => {
             Close
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Edit Post Modal */}
+      <Modal show={showEditPostModal} onHide={() => setShowEditPostModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleEditPostSubmit}>
+            <Form.Group className="mb-3" controlId="formTitle">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.title || ''}
+                onChange={(e) => setEditPost({ ...editPost, title: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formContent">
+              <Form.Label>Content</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={editPost?.content || ''}
+                onChange={(e) => setEditPost({ ...editPost, content: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formCategory">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.category || ''}
+                onChange={(e) => setEditPost({ ...editPost, category: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formSkills">
+              <Form.Label>Skills</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.skills?.join(', ') || ''}
+                onChange={(e) => setEditPost({ ...editPost, skills: e.target.value.split(',').map((skill) => skill.trim()) })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formLocation">
+              <Form.Label>Location</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.location || ''}
+                onChange={(e) => setEditPost({ ...editPost, location: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formAvailability">
+              <Form.Label>Availability</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.availability || ''}
+                onChange={(e) => setEditPost({ ...editPost, availability: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formExperience">
+              <Form.Label>Experience</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.experience || ''}
+                onChange={(e) => setEditPost({ ...editPost, experience: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formContact">
+              <Form.Label>Contact</Form.Label>
+              <Form.Control
+                type="text"
+                value={editPost?.contact || ''}
+                onChange={(e) => setEditPost({ ...editPost, contact: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formExpectedMoney">
+              <Form.Label>Expected Money</Form.Label>
+              <Form.Control
+                type="number"
+                value={editPost?.expectedMoney || ''}
+                onChange={(e) => setEditPost({ ...editPost, expectedMoney: e.target.value })}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formVisibility">
+              <Form.Label>Visibility</Form.Label>
+              <Form.Select
+                value={editPost?.visibility || 'public'}
+                onChange={(e) => setEditPost({ ...editPost, visibility: e.target.value })}
+                required
+              >
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formStatus">
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={editPost?.status || 'open'}
+                onChange={(e) => setEditPost({ ...editPost, status: e.target.value })}
+                required
+              >
+                <option value="open">Open</option>
+                <option value="active">Active</option>
+                <option value="closed">Closed</option>
+              </Form.Select>
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Save Changes
+            </Button>
+          </Form>
+        </Modal.Body>
       </Modal>
     </Layout>
   );
